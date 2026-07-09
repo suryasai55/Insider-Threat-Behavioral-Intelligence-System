@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Insider Threat Behavioral Intelligence</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(17, 24, 39, 0.75);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --primary: #00f2fe;
+            --primary-glow: rgba(0, 242, 254, 0.4);
+            --secondary: #4facfe;
+            --accent-red: #ef4444;
+            --accent-green: #10b981;
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: radial-gradient(circle at 50% 50%, #111827 0%, #0b0f19 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        /* Abstract cyber background grids */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 242, 254, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 254, 0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: center;
+            z-index: -1;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px 32px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), 
+                        0 0 32px 0 rgba(0, 242, 254, 0.04);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-container {
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 242, 254, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+            animation: pulse 3s infinite alternate;
+        }
+
+        .title {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            color: var(--text-secondary);
+            pointer-events: none;
+            transition: color 0.3s;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(10, 15, 30, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 14px 12px 42px;
+            color: #ffffff;
+            font-family: var(--font-body);
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-glow);
+            background: rgba(10, 15, 30, 0.9);
+        }
+
+        .form-input:focus + .input-icon {
+            color: var(--primary);
+        }
+
+        .alert {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(90deg, #00f2fe, #4facfe);
+            border: none;
+            border-radius: 8px;
+            color: #0b0f19;
+            font-family: var(--font-display);
+            font-size: 16px;
+            font-weight: 600;
+            padding: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+        }
+
+        .btn-submit:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 242, 254, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(1px);
+        }
+
+        .footer-text {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 24px;
+        }
+
+        .footer-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .footer-link:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 10px rgba(0, 242, 254, 0.1);
+            }
+            100% {
+                box-shadow: 0 0 25px rgba(0, 242, 254, 0.3);
+            }
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 2px solid rgba(11, 15, 25, 0.3);
+            border-radius: 50%;
+            border-top: 2px solid #0b0f19;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="login-card">
+        <div class="header">
+            <div class="logo-container">
+                <i data-lucide="shield-alert"></i>
+            </div>
+            <h1 class="title">Behavioral Intelligence</h1>
+            <p class="subtitle">Insider Threat Detection Portal</p>
+        </div>
+
+        <div class="alert" id="errorAlert">
+            <i data-lucide="alert-circle" style="width: 18px; height: 18px; flex-shrink: 0;"></i>
+            <span id="errorMessage">Invalid credentials. Please try again.</span>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <div class="input-wrapper">
+                    <input type="text" id="username" name="username" class="form-input" placeholder="Enter your username" required autocomplete="username">
+                    <i data-lucide="user" class="input-icon"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <div class="input-wrapper">
+                    <input type="password" id="password" name="password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+                    <i data-lucide="lock" class="input-icon"></i>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <span>Access System</span>
+                <div class="spinner" id="btnSpinner"></div>
+                <i data-lucide="arrow-right" id="btnArrow"></i>
+            </button>
+        </form>
+
+        <p class="footer-text">
+            Onboard new analyst? 
+            <a href="/register" class="footer-link">Register Account</a>
+        </p>
+    </div>
+</div>
+
+<script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Check if user already has an access token and redirect
+    if (localStorage.getItem('access_token')) {
+        window.location.href = '/profile';
+    }
+
+    const loginForm = document.getElementById('loginForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const btnArrow = document.getElementById('btnArrow');
+    const errorAlert = document.getElementById('errorAlert');
+    const errorMessage = document.getElementById('errorMessage');
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // Hide previous errors
+        errorAlert.style.display = 'none';
+
+        // Show spinner, disable button
+        submitBtn.disabled = true;
+        btnSpinner.style.display = 'inline-block';
+        btnArrow.style.display = 'none';
+
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                // Store JWT tokens and user info
+                localStorage.setItem('access_token', result.data.access_token);
+                localStorage.setItem('refresh_token', result.data.refresh_token);
+                localStorage.setItem('username', result.data.user.username);
+                localStorage.setItem('role', result.data.user.role);
+                localStorage.setItem('employee_id', result.data.user.employee_id || '');
+
+                // Redirect to profile
+                window.location.href = '/profile';
+            } else {
+                // Show error message
+                errorMessage.textContent = result.message || 'Login failed. Please check your credentials.';
+                errorAlert.style.display = 'flex';
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            errorMessage.textContent = 'A network error occurred. Connection refused.';
+            errorAlert.style.display = 'flex';
+        } finally {
+            // Restore button state
+            submitBtn.disabled = false;
+            btnSpinner.style.display = 'none';
+            btnArrow.style.display = 'inline-block';
+        }
+    });
+</script>
+</body>
+</html>

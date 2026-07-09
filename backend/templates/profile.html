@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Insider Threat Behavioral Intelligence</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-color: #080b11;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --primary: #00f2fe;
+            --primary-glow: rgba(0, 242, 254, 0.15);
+            --secondary: #4facfe;
+            --accent-red: #ef4444;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: #080b11;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Abstract cyber background grids */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 242, 254, 0.01) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 254, 0.01) 1px, transparent 1px);
+            background-size: 50px 50px;
+            background-position: center;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Header / Navbar */
+        .navbar {
+            background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #ffffff;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .nav-logo i {
+            color: var(--primary);
+            filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.5));
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .role-badge {
+            background: rgba(0, 242, 254, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 8px;
+            color: #fca5a5;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-family: var(--font-display);
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: var(--accent-red);
+            color: #ffffff;
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            flex-grow: 1;
+        }
+
+        @media (max-width: 900px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            height: fit-content;
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ffffff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 10px;
+        }
+
+        .profile-img-container {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(0, 242, 254, 0.05);
+            border: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: var(--primary);
+        }
+
+        .info-list {
+            list-style: none;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 14px;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+        }
+
+        .info-value {
+            font-weight: 500;
+            color: #ffffff;
+            text-align: right;
+        }
+
+        /* Timeline / Activity Logs */
+        .timeline {
+            position: relative;
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 2px;
+            height: calc(100% - 20px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 24px;
+            padding-left: 20px;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: -19px;
+            top: 4px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+            border: 2px solid var(--bg-color);
+        }
+
+        .timeline-marker.success {
+            background: var(--accent-green);
+            box-shadow: 0 0 8px var(--accent-green);
+        }
+
+        .timeline-marker.warning {
+            background: var(--accent-yellow);
+            box-shadow: 0 0 8px var(--accent-yellow);
+        }
+
+        .timeline-marker.danger {
+            background: var(--accent-red);
+            box-shadow: 0 0 8px var(--accent-red);
+        }
+
+        .timeline-content {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 14px 18px;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .timeline-type {
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .timeline-time {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .timeline-desc {
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .timeline-footer {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.4);
+            display: flex;
+            gap: 15px;
+        }
+
+        .timeline-footer span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .logs-empty {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="/profile" class="nav-logo">
+        <i data-lucide="shield-alert"></i>
+        <span>Insider Threat behavioral Intelligence</span>
+    </a>
+    <div class="nav-user">
+        <div class="user-tag">
+            <span id="navUsername">username</span>
+            <span class="role-badge" id="navRole">role</span>
+        </div>
+        <button class="btn-logout" id="logoutBtn">
+            <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+            <span>Revoke Access</span>
+        </button>
+    </div>
+</nav>
+
+<!-- Main Container -->
+<div class="main-container">
+    <!-- Left Column: User Profile -->
+    <div class="card">
+        <div class="card-title">
+            <i data-lucide="fingerprint"></i>
+            <span>Identity Profile</span>
+        </div>
+        
+        <div class="profile-img-container">
+            <i data-lucide="user" style="width: 40px; height: 40px;"></i>
+        </div>
+
+        <ul class="info-list">
+            <li class="info-item">
+                <span class="info-label">Security Credentials</span>
+                <span class="info-value" id="profUsername">-</span>
+            </li>
+            <li class="info-item">
+                <span class="info-label">Privilege Tier</span>
+                <span class="info-value"><span class="role-badge" id="profRole">-</span></span>
+            </li>
+            <li class="info-item">
+                <span class="info-label">Linked Employee Code</span>
+                <span class="info-value" id="profEmpCode">-</span>
+            </li>
+            <li class="info-item">
+                <span class="info-label">Full Name</span>
+                <span class="info-value" id="profFullName">-</span>
+            </li>
+            <li class="info-item">
+                <span class="info-label">Department</span>
+                <span class="info-value" id="profDept">-</span>
+            </li>
+            <li class="info-item">
+                <span class="info-label">Designation</span>
+                <span class="info-value" id="profDesg">-</span>
+            </li>
+            <li class="info-item">
+                <span class="info-label">Status</span>
+                <span class="info-value"><span class="status-badge" id="profStatus">-</span></span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Right Column: User Behavior Timeline -->
+    <div class="card" style="align-self: stretch;">
+        <div class="card-title">
+            <i data-lucide="activity"></i>
+            <span>Behavioral Audit Log (User Timeline)</span>
+        </div>
+
+        <div id="logsContainer">
+            <div class="logs-empty">
+                <i data-lucide="database" style="margin-bottom: 12px; opacity: 0.5;"></i>
+                <p>Loading activity logs...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Check JWT Authentication
+    const accessToken = localStorage.getItem('access_token');
+    const localUsername = localStorage.getItem('username');
+    const localRole = localStorage.getItem('role');
+
+    if (!accessToken) {
+        // Redirect to login if not logged in
+        window.location.href = '/login';
+    }
+
+    // Populate temporary state
+    document.getElementById('navUsername').textContent = localUsername || 'Analyst';
+    document.getElementById('navRole').textContent = localRole || 'EMPLOYEE';
+
+    // Fetch Profile details from REST API
+    async function loadProfile() {
+        try {
+            const response = await fetch('/api/auth/profile', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
+
+            if (!response.ok) {
+                // If token expired or invalid, clear and redirect
+                if (response.status === 401) {
+                    logout();
+                }
+                return;
+            }
+
+            const result = await response.json();
+            const data = result.data;
+
+            // Populate profile cards
+            document.getElementById('profUsername').textContent = data.username;
+            document.getElementById('profRole').textContent = data.role;
+            
+            if (data.employee_details) {
+                const emp = data.employee_details;
+                document.getElementById('profEmpCode').textContent = emp.employee_code;
+                document.getElementById('profFullName').textContent = `${emp.first_name} ${emp.last_name}`;
+                document.getElementById('profDept').textContent = emp.department;
+                document.getElementById('profDesg').textContent = emp.designation;
+                document.getElementById('profStatus').textContent = emp.status;
+            } else {
+                document.getElementById('profEmpCode').textContent = 'N/A';
+                document.getElementById('profFullName').textContent = 'System Account';
+                document.getElementById('profDept').textContent = 'N/A';
+                document.getElementById('profDesg').textContent = 'Administrator';
+                document.getElementById('profStatus').textContent = 'ACTIVE';
+            }
+
+            // Fetch activity logs for this user/employee
+            loadActivityLogs(data.employee_id);
+
+        } catch (error) {
+            console.error('Failed to load profile:', error);
+        }
+    }
+
+    async function loadActivityLogs(employeeId) {
+        try {
+            // Determine url based on employee details
+            let url = '/api/activity';
+            if (employeeId) {
+                url = `/api/activity/employee/${employeeId}`;
+            }
+
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
+
+            const logsContainer = document.getElementById('logsContainer');
+
+            if (response.ok) {
+                const result = await response.json();
+                const logs = result.data || [];
+
+                if (logs.length === 0) {
+                    logsContainer.innerHTML = `
+                        <div class="logs-empty">
+                            <p>No activity logs found for this profile.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Render logs in a timeline
+                let html = '<div class="timeline">';
+                logs.forEach(log => {
+                    // Decide marker color based on type
+                    let markerClass = 'success';
+                    if (log.activity_type.includes('FAILURE') || log.activity_type.includes('DELETE')) {
+                        markerClass = 'danger';
+                    } else if (log.activity_type.includes('UPDATE')) {
+                        markerClass = 'warning';
+                    }
+
+                    const dateStr = new Date(log.timestamp).toLocaleString();
+
+                    html += `
+                        <div class="timeline-item">
+                            <div class="timeline-marker ${markerClass}"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <span class="timeline-type" style="color: ${markerClass === 'danger' ? 'var(--accent-red)' : markerClass === 'warning' ? 'var(--accent-yellow)' : 'var(--primary)'}">${log.activity_type}</span>
+                                    <span class="timeline-time">${dateStr}</span>
+                                </div>
+                                <div class="timeline-desc">${log.description}</div>
+                                <div class="timeline-footer">
+                                    <span><i data-lucide="monitor" style="width: 12px; height: 12px;"></i> ${log.device_name || 'N/A'}</span>
+                                    <span><i data-lucide="globe" style="width: 12px; height: 12px;"></i> IP: ${log.ip_address || '127.0.0.1'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+
+                logsContainer.innerHTML = html;
+                lucide.createIcons();
+            } else {
+                logsContainer.innerHTML = `
+                    <div class="logs-empty">
+                        <p style="color: var(--accent-red)">Failed to load activity logs.</p>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error('Failed to load logs:', error);
+        }
+    }
+
+    function logout() {
+        // Clear local storage
+        localStorage.clear();
+        window.location.href = '/login';
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+        try {
+            // Call logout endpoint
+            await fetch('/api/auth/logout', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
+        } catch (e) {
+            console.error('Logout error:', e);
+        }
+        logout();
+    });
+
+    // Run Profile load
+    loadProfile();
+</script>
+</body>
+</html>
